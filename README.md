@@ -1,6 +1,8 @@
 # 🛒 E-Commerce Sales Insights with PostgreSQL
 
 This project showcases my SQL and data analysis skills by simulating an e-commerce business database and uncovering key insights related to customer behavior, product performance, and sales trends.
+I created this project to simulate real-world data problems and demonstrate how SQL can turn raw data into meaningful business insights. It showcases the kind of data analysis I’d bring to any data-driven team.
+
 
 ## 📊 Key Skills Demonstrated
 - PostgreSQL queries (joins, CTEs, window functions)
