@@ -56,28 +56,28 @@ Stored in [`analysis_queries.sql`](./analysis_queries.sql), including:
 ### 🔁 Customer Order Frequency  
 Shows how many customers placed 1, 2, or 3 orders.
 
-![Customer Order Frequency Distribution](images/Customer%20Order%20Frequency%20Distribution.png)
+![Customer Order Frequency](images/customer_order_frequency.png)
 
 ---
 
 ### 💸 Highest Revenue-Generating Products  
 Displays the top-selling products based on total revenue.
 
-![Highest Revenue-Generating Products](images/Highest%20Revenue-Generating%20Products.png)
+![Highest Revenue Products](images/highest_revenue_products.png)
 
 ---
 
 ### 📆 Monthly Sales Trends  
 Tracks monthly revenue and order volume.
 
-![Monthly Sales Trends](images/Monthly%20Sales%20Trends.png)
+![Monthly Sales Trends](images/monthly_sales_trends.png)
 
 ---
 
 ### 📊 Total Orders and Revenue by Category  
 Comparison of units sold vs revenue by category.
 
-![Total Orders and Revenue by Product Category](images/Total%20Orders%20and%20Revenue%20by%20Product%20Category.png)
+![Revenue by Category](images/orders_revenue_by_category.png)
 
 ---
 
