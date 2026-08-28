@@ -1,120 +1,75 @@
+# E-Commerce Sales Insights with PostgreSQL
 
-# 🛒 E-Commerce Sales Insights with PostgreSQL
+A reproducible e-commerce analytics project covering relational data modeling, database setup, KPI analysis and business recommendations.
 
-This project simulates a real-world e-commerce analytics workflow using **PostgreSQL**. It covers everything from relational schema creation and sample data population to advanced SQL analysis and visual business insights.
+> The project uses a small simulated dataset to demonstrate the workflow. Its findings are illustrative rather than representative of a real business.
 
----
+## Business questions
 
-## 📌 Project Highlights
+- Which products and categories generate the most revenue?
+- Who are the highest-value customers?
+- What proportion of customers purchase repeatedly?
+- How do revenue and order volume change over time?
 
-- 🗃️ Relational schema: customers, products, orders, order_items
-- 🛠️ SQL queries for KPIs like total revenue, top customers, repeat rate
-- 📊 Visualizations generated using pgAdmin and Python
-- 🧠 Business insights included in markdown format
-- 🚀 GitHub-friendly structure with reproducible scripts
+## Data model
 
----
+| Table | Purpose |
+|---|---|
+| `customers` | Customer details, signup date and acquisition source |
+| `products` | Product name, category and price |
+| `orders` | Order date, total and customer relationship |
+| `order_items` | Product-level quantities within each order |
 
-## 🧱 Database Structure
+The schema is defined in [`database_schema.sql`](./database_schema.sql).
 
-- `customers`: customer info, signup date, referral source
-- `products`: name, category, price
-- `orders`: order total, date, linked to customer
-- `order_items`: detailed product quantities per order
+## Analysis
 
-📄 Schema file: [`database_schema.sql`](./database_schema.sql)
+Queries in [`analysis_queries.sql`](./analysis_queries.sql) calculate:
 
----
-
-## 🧪 Sample Data
-
-Fake but realistic data using SQL and Python:
-- 10 customers
-- 5 products across 4 categories
-- Dozens of orders and order items
-
-📄 Data scripts:
-- [`sample_data.sql`](./sample_data.sql)
-- [`sample_customers.sql`](./sample_customers.sql)
-
----
-
-## 📊 Analysis Queries
-
-Stored in [`analysis_queries.sql`](./analysis_queries.sql), including:
-
-- Top 5 customers by spending
 - Revenue by product and category
-- Monthly sales trends
-- Average order size
-- Repeat customers
+- Monthly revenue and order trends
+- Average order value
+- Top customers by spend
+- Customer order frequency and repeat purchasing
 
----
+## Findings
 
-## 📈 Visualizations
+- Electronics generated the most revenue and sales volume in the sample.
+- Most customers placed only one order, indicating a retention opportunity.
+- Repeat customers contributed disproportionately to revenue.
 
-### 🔁 Customer Order Frequency  
-Shows how many customers placed 1, 2, or 3 orders.
+More detailed interpretation is available in [`business_insights.md`](./business_insights.md).
 
-![Customer Order Frequency](images/customer_order_frequency.png)
+## Visualizations
 
----
+### Customer order frequency
 
-### 💸 Highest Revenue-Generating Products  
-Displays the top-selling products based on total revenue.
+![Customer order frequency](images/customer_order_frequency.png)
 
-![Highest Revenue Products](images/highest_revenue_products.png)
+### Highest-revenue products
 
----
+![Highest-revenue products](images/highest_revenue_products.png)
 
-### 📆 Monthly Sales Trends  
-Tracks monthly revenue and order volume.
+### Monthly sales trends
 
-![Monthly Sales Trends](images/monthly_sales_trends.png)
+![Monthly sales trends](images/monthly_sales_trends.png)
 
----
+### Orders and revenue by category
 
-### 📊 Total Orders and Revenue by Category  
-Comparison of units sold vs revenue by category.
+![Orders and revenue by category](images/orders_revenue_by_category.png)
 
-![Revenue by Category](images/orders_revenue_by_category.png)
+## Reproduce the project
 
----
+1. Clone the repository.
+2. Create a PostgreSQL database.
+3. Run `postgresql_ecommerce_full_setup.sql` in pgAdmin or `psql`.
+4. Run the queries in `analysis_queries.sql`.
+5. Review the charts and `business_insights.md`.
 
-## 📑 Business Insights
+## Tools
 
-Real-world business insights and recommendations are included in:  
-📄 [`business_insights.md`](./business_insights.md)
+PostgreSQL 17, SQL, pgAdmin, Python, Git and GitHub
 
-Sample takeaways:
-- Electronics dominate revenue and volume
-- Most customers order only once — churn risk
-- Repeat buyers contribute disproportionately to revenue
+## Author
 
----
-
-## 🚀 How to Run This Project
-
-1. Clone the repo
-2. Import [`postgresql_ecommerce_full_setup.sql`](./postgresql_ecommerce_full_setup.sql) into pgAdmin or run via psql
-3. Explore queries and visualizations via pgAdmin or Python
-
----
-
-## ⚙️ Tools Used
-
-- PostgreSQL 17
-- pgAdmin 4
-- SQL
-- Python (optional for charts)
-- Git + GitHub
-
----
-
-## 👋 Author
-
-**Atif Elmasry**  
-📍 Berlin-based aspiring Data Analyst  
-🔗 [LinkedIn](https://www.linkedin.com/in/tioatifelmasry) | [GitHub](https://github.com/AtifElmasry)
-
----
+[Atif Elmasry](https://github.com/AtifElmasry) · [LinkedIn](https://www.linkedin.com/in/tioatifelmasry/)
