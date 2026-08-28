@@ -1,45 +1,35 @@
--- E-Commerce Database Schema
+-- PostgreSQL schema for the cleaned UCI Online Retail data.
 
-CREATE TABLE customers (
-    customer_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    email VARCHAR(100),
-    signup_date DATE
+DROP TABLE IF EXISTS customer_rfm;
+DROP TABLE IF EXISTS transactions;
+
+CREATE TABLE transactions (
+    invoice_no TEXT NOT NULL,
+    stock_code TEXT NOT NULL,
+    description TEXT,
+    quantity INTEGER NOT NULL CHECK (quantity > 0),
+    invoice_date TIMESTAMP NOT NULL,
+    unit_price NUMERIC(12, 4) NOT NULL CHECK (unit_price > 0),
+    customer_id NUMERIC,
+    country TEXT NOT NULL,
+    is_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
+    line_revenue NUMERIC(14, 4) NOT NULL
 );
 
-CREATE TABLE products (
-    product_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    category VARCHAR(50),
-    price NUMERIC(10, 2)
-);
+CREATE INDEX idx_transactions_invoice_date
+    ON transactions (invoice_date);
+CREATE INDEX idx_transactions_customer_id
+    ON transactions (customer_id);
+CREATE INDEX idx_transactions_stock_code
+    ON transactions (stock_code);
 
-CREATE TABLE orders (
-    order_id SERIAL PRIMARY KEY,
-    customer_id INT REFERENCES customers(customer_id),
-    order_date DATE,
-    total_amount NUMERIC(10, 2)
-);
-
-CREATE TABLE order_items (
-    item_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES orders(order_id),
-    product_id INT REFERENCES products(product_id),
-    quantity INT,
-    price_each NUMERIC(10, 2)
-);
-
-CREATE TABLE ads (
-    ad_id SERIAL PRIMARY KEY,
-    campaign_name VARCHAR(100),
-    spend NUMERIC(10, 2),
-    start_date DATE,
-    end_date DATE
-);
-
-CREATE TABLE ad_clicks (
-    click_id SERIAL PRIMARY KEY,
-    ad_id INT REFERENCES ads(ad_id),
-    customer_id INT REFERENCES customers(customer_id),
-    click_date DATE
+CREATE TABLE customer_rfm (
+    customer_id NUMERIC PRIMARY KEY,
+    recency_days INTEGER NOT NULL,
+    frequency INTEGER NOT NULL,
+    monetary NUMERIC(14, 2) NOT NULL,
+    r_score SMALLINT NOT NULL CHECK (r_score BETWEEN 1 AND 5),
+    f_score SMALLINT NOT NULL CHECK (f_score BETWEEN 1 AND 5),
+    m_score SMALLINT NOT NULL CHECK (m_score BETWEEN 1 AND 5),
+    segment TEXT NOT NULL
 );

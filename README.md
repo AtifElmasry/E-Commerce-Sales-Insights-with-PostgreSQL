@@ -1,74 +1,97 @@
-# E-Commerce Sales Insights with PostgreSQL
+# Online Retail Analytics with PostgreSQL and Python
 
-A reproducible e-commerce analytics project covering relational data modeling, database setup, KPI analysis and business recommendations.
+An end-to-end customer and revenue analytics project using **541,909 real transaction lines** from a UK-based online retailer.
 
-> The project uses a small simulated dataset to demonstrate the workflow. Its findings are illustrative rather than representative of a real business.
+The project replaces a small mock database with a reproducible pipeline for transaction cleaning, KPI calculation, customer segmentation and PostgreSQL analysis.
 
 ## Business questions
 
-- Which products and categories generate the most revenue?
-- Who are the highest-value customers?
-- What proportion of customers purchase repeatedly?
-- How do revenue and order volume change over time?
+- How much net revenue is generated, and how does it change over time?
+- Which products and countries contribute the most revenue?
+- What is the cancellation and returns burden?
+- Which customers are recent, frequent and high-value?
+- Which customer segments should receive retention, reactivation or loyalty campaigns?
 
-## Data model
+## Dataset
 
-| Table | Purpose |
+- **Source:** [UCI Online Retail](https://archive.ics.uci.edu/dataset/352/online+retail)
+- **DOI:** [10.24432/C5BW33](https://doi.org/10.24432/C5BW33)
+- **License:** CC BY 4.0
+- **Period:** 1 December 2010 to 9 December 2011
+- **Scale:** 541,909 line items
+- **Business:** UK-based non-store retailer selling giftware
+- **Fields:** invoice, product, description, quantity, timestamp, unit price, customer and country
+
+Raw data is retrieved from UCI and is not duplicated in this repository.
+
+## Analytical workflow
+
+1. Standardize column names and data types.
+2. Identify cancellations from invoice numbers beginning with `C`.
+3. Separate gross activity from valid positive-quantity sales.
+4. Calculate line revenue and invoice-level order value.
+5. Build monthly, country and product performance views.
+6. Create customer-level RFM features:
+   - **Recency:** days since the last purchase
+   - **Frequency:** number of distinct invoices
+   - **Monetary:** total net sales value
+7. Assign actionable customer segments.
+8. Export clean tables for PostgreSQL.
+
+## Customer segments
+
+| Segment | Typical action |
 |---|---|
-| `customers` | Customer details, signup date and acquisition source |
-| `products` | Product name, category and price |
-| `orders` | Order date, total and customer relationship |
-| `order_items` | Product-level quantities within each order |
+| Champions | Loyalty benefits, early access and referrals |
+| Loyal customers | Cross-sell and replenishment campaigns |
+| Potential loyalists | Onboarding and second-purchase incentives |
+| At risk | Targeted win-back based on prior value |
+| Hibernating | Low-cost reactivation or suppression |
+| Other | Further behavioral investigation |
 
-The schema is defined in [`database_schema.sql`](./database_schema.sql).
+Segment rules are transparent heuristics, not universal truths. They should be validated against campaign outcomes.
 
-## Analysis
+## Repository structure
 
-Queries in [`analysis_queries.sql`](./analysis_queries.sql) calculate:
+```text
+src/retail_analysis.py       Data retrieval, cleaning, KPIs and RFM
+database_schema.sql          PostgreSQL schema for clean transactions and RFM
+analysis_queries.sql         Revenue, retention and customer-value queries
+tests/                       Unit tests with local fixtures
+data/README.md               Source and licensing notes
+requirements.txt
+.github/workflows/python.yml
+```
 
-- Revenue by product and category
-- Monthly revenue and order trends
-- Average order value
-- Top customers by spend
-- Customer order frequency and repeat purchasing
+## Run the project
 
-## Findings
+```bash
+git clone https://github.com/AtifElmasry/E-Commerce-Sales-Insights-with-PostgreSQL.git
+cd E-Commerce-Sales-Insights-with-PostgreSQL
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python src/retail_analysis.py
+```
 
-- Electronics generated the most revenue and sales volume in the sample.
-- Most customers placed only one order, indicating a retention opportunity.
-- Repeat customers contributed disproportionately to revenue.
+The script writes:
 
-More detailed interpretation is available in [`business_insights.md`](./business_insights.md).
+- `data/processed/transactions.csv`
+- `data/processed/customer_rfm.csv`
 
-## Visualizations
+Load these files into the PostgreSQL tables defined in `database_schema.sql`, then run `analysis_queries.sql`.
 
-### Customer order frequency
+## Data-quality decisions
 
-![Customer order frequency](images/customer_order_frequency.png)
+- Cancelled invoices remain measurable but are excluded from net-sales analysis.
+- Negative quantities and nonpositive prices are excluded from valid sales.
+- Missing customer IDs are retained for transaction-level diagnostics but excluded from RFM.
+- Revenue is calculated as quantity × unit price and should not be interpreted as profit.
+- The retailer is anonymized and historical, limiting external generalization.
 
-### Highest-revenue products
+## Skills demonstrated
 
-![Highest-revenue products](images/highest_revenue_products.png)
-
-### Monthly sales trends
-
-![Monthly sales trends](images/monthly_sales_trends.png)
-
-### Orders and revenue by category
-
-![Orders and revenue by category](images/orders_revenue_by_category.png)
-
-## Reproduce the project
-
-1. Clone the repository.
-2. Create a PostgreSQL database.
-3. Run `postgresql_ecommerce_full_setup.sql` in pgAdmin or `psql`.
-4. Run the queries in `analysis_queries.sql`.
-5. Review the charts and `business_insights.md`.
-
-## Tools
-
-PostgreSQL 17, SQL, pgAdmin, Python, Git and GitHub
+Large transaction data, cleaning rules, KPI design, SQL, RFM segmentation, customer analytics, reproducible pipelines, testing and business recommendations.
 
 ## Author
 

@@ -1,27 +1,73 @@
--- SQL Queries for Data Insights
+-- Executive KPI summary
+SELECT
+    ROUND(SUM(line_revenue), 2) AS net_revenue,
+    COUNT(DISTINCT invoice_no) AS orders,
+    COUNT(DISTINCT customer_id) AS identified_customers,
+    ROUND(
+        SUM(line_revenue) / NULLIF(COUNT(DISTINCT invoice_no), 0),
+        2
+    ) AS average_order_value
+FROM transactions;
 
--- Top 5 customers by total spend
-SELECT c.name, SUM(o.total_amount) AS total_spent
-FROM customers c
-JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.name
-ORDER BY total_spent DESC
-LIMIT 5;
+-- Monthly revenue, orders and purchasing customers
+SELECT
+    DATE_TRUNC('month', invoice_date) AS month,
+    ROUND(SUM(line_revenue), 2) AS revenue,
+    COUNT(DISTINCT invoice_no) AS orders,
+    COUNT(DISTINCT customer_id) AS customers
+FROM transactions
+GROUP BY 1
+ORDER BY 1;
 
--- Best-selling products by quantity
-SELECT p.name, SUM(oi.quantity) AS total_sold
-FROM order_items oi
-JOIN products p ON oi.product_id = p.product_id
-GROUP BY p.name
-ORDER BY total_sold DESC;
+-- Country performance excluding the home market
+SELECT
+    country,
+    ROUND(SUM(line_revenue), 2) AS revenue,
+    COUNT(DISTINCT invoice_no) AS orders,
+    ROUND(
+        SUM(line_revenue) / NULLIF(COUNT(DISTINCT invoice_no), 0),
+        2
+    ) AS average_order_value
+FROM transactions
+WHERE country <> 'United Kingdom'
+GROUP BY country
+ORDER BY revenue DESC
+LIMIT 15;
 
--- Average order value
-SELECT AVG(total_amount) AS average_order_value
-FROM orders;
+-- Highest-revenue products
+SELECT
+    stock_code,
+    MAX(description) AS description,
+    SUM(quantity) AS units,
+    ROUND(SUM(line_revenue), 2) AS revenue
+FROM transactions
+GROUP BY stock_code
+ORDER BY revenue DESC
+LIMIT 20;
 
--- Ad campaign performance
-SELECT a.campaign_name, COUNT(ac.click_id) AS clicks, a.spend, 
-       ROUND(a.spend / NULLIF(COUNT(ac.click_id), 0), 2) AS cost_per_click
-FROM ads a
-LEFT JOIN ad_clicks ac ON a.ad_id = ac.ad_id
-GROUP BY a.campaign_name, a.spend;
+-- Segment size and value
+SELECT
+    segment,
+    COUNT(*) AS customers,
+    ROUND(AVG(recency_days), 1) AS avg_recency_days,
+    ROUND(AVG(frequency), 1) AS avg_orders,
+    ROUND(SUM(monetary), 2) AS segment_value
+FROM customer_rfm
+GROUP BY segment
+ORDER BY segment_value DESC;
+
+-- Revenue concentration among the top 10% of customers
+WITH ranked AS (
+    SELECT
+        customer_id,
+        monetary,
+        NTILE(10) OVER (ORDER BY monetary DESC) AS value_decile
+    FROM customer_rfm
+)
+SELECT
+    ROUND(
+        100.0 * SUM(monetary) FILTER (WHERE value_decile = 1)
+        / NULLIF(SUM(monetary), 0),
+        2
+    ) AS top_decile_revenue_share_pct
+FROM ranked;
